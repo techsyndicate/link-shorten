@@ -20,12 +20,15 @@ app.use(express.urlencoded({extended: false}))
 app.get('/:id', async (req, res) => {
     const link = req.params.id
     if(link == '' || link == '/'){
-        res.redirect('https://techsyndicate.us')
+        
     }
     else{
         const wo = await Link.findOne({backlink:link});
         console.log(wo)
-        res.redirect(wo.link);
+        if(!wo) res.redirect('https://techsyndicate.us');
+        else{
+            res.redirect(wo.link);
+        }
     }
 });
 
