@@ -17,9 +17,12 @@ app.use(session({
 }))
 app.use(express.urlencoded({extended: false}))
 
-app.get('/:id', async (req, res) => {
-    const link = req.params.id
+app.get('/*', async (req, res) => {
+    let link = req.url 
+    
+    console.log(link)
 
+    link = req.url.substring(1);
     const wo = await Link.findOne({backlink:link});
     console.log(wo)
     if(!wo) res.redirect('https://techsyndicate.us');
