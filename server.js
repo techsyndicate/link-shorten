@@ -6,6 +6,17 @@ const session = require('express-session')
 const mongoose = require('mongoose');
 const app = express();
 
+const { Client, GatewayIntentBits } = require('discord.js');
+const on_message = require('./Discord/on_message');
+
+const token = process.env.TOKEN;
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    ]
+});
+
 mongoose.connect(process.env.MONGO_URI, console.log('MONGODB CONNECTED'))
 
 const Link = require('./schemas/linkSchema');
@@ -39,3 +50,10 @@ const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
 });
+
+client.on("messageCreate", message => {
+    message.content = message.content;
+    on_message(client, message);
+})
+
+client.login(token);
