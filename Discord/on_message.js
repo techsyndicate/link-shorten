@@ -46,8 +46,7 @@ module.exports = async (client, message) => {
                                 }
                             } else {
                                 forwardMessage(client, message, blChannelId, content);
-                            }                        } else {
-                            forwardMessage(client, message, blChannelId, "khada hu aaj bhi vahi");
+                            }                        
                         }
                     }).catch(err => {
                         console.error('Error fetching backlinks:', err);
@@ -77,21 +76,61 @@ module.exports = async (client, message) => {
                         date
                     });
                 
-                    if (errors.length > 0) {
-                        return sendMessage(message, {errors})
-                    }
+                    // if (errors.length > 0) {
+                    //     return sendMessage(message, {errors})
+                    // }
                     
                     await newLink.save()
 
                     forwardMessage(client, message, blChannelId , `New backlink from ${message.author.username}:\nName: ${blName}\nShort: ${blShort}\nLink: ${blLink}` );
                 }
 
+                if(bl[1] == 'edit'){
+                    if(bl.length < 5 || bl.length > 5){
+                        forwardMessage(client, message, blChannelId, 'Usage: `ts edit <short> <field> <new_value>`\nFields: name, link');
+                        return;
+                    }
+                    
+                    const shortToEdit = bl[2];
+                    const fieldToEdit = bl[3];
+                    const newValue = bl[4];
+                    
+                    if(!['name', 'link'].includes(fieldToEdit)){
+                        forwardMessage(client, message, blChannelId, 'Invalid field. Available fields: backlink, link');
+                        return;
+                    }
+                    
+                    try {
+                        const existingLink = await Link.findOne({backlink: shortToEdit});
+                        
+                        if(!existingLink){
+                            forwardMessage(client, message, blChannelId, `Backlink with short name ${shortToEdit} not found.`);
+                            return;
+                        }
+                        
+                        const updateObj = {};
+                        updateObj[fieldToEdit] = newValue;
+                        
+                        await Link.findOneAndUpdate({backlink: shortToEdit}, updateObj);
+                        
+                        forwardMessage(client, message, blChannelId, `Backlink ${shortToEdit} updated successfully!\n${fieldToEdit} changed to: ${newValue}`);
+                        
+                    } catch (error) {
+                        console.error('Error editing backlink:', error);
+                        forwardMessage(client, message, blChannelId, 'An error occurred while editing the backlink.');
+                    }
+                }
+
+                // if(bl[1]== ''){
+                //     forwardMessage(client, message, blChannelId, '');
+                // }
                 if(bl[1] == 'help'){
                     const helpMessage = `**Backlink Commands** 
 \`ts add <name> <short> <link>\` - Add a new backlink 
 \`ts remove <short>\` - Remove a backlink by its short name 
 \`ts show\` - Show all backlinks 
-\`ts help\` - Show this help message`;
+\`ts help\` - Show this help message
+\`ts edit <backlink_to_edit> <field_to_edit> <new_value_for_field>\` - Edit a backlink field (name, link)`;
                     forwardMessage(client, message, blChannelId, helpMessage);
                 }
             }
