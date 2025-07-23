@@ -6,6 +6,10 @@ const privateCrossId = process.env.PRIVATE_CROSS_ID;
 
 module.exports = async (client, message) => {
     if (!message.author.bot) {
+        if(message.content == 'ts sit man'){
+            console.log(message.channelId);
+            forwardMessage(client, message,message.channelId,"sit man");
+        }
         if (message.channel.id == publicCrossId && message) {
             if (message.content.includes('(') && message.content.includes(')')) {
                 console.log('Cross question detected');
