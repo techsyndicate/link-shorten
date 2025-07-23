@@ -121,9 +121,9 @@ module.exports = async (client, message) => {
                     }
                 }
 
-                // if(bl[1]== ''){
-                //     forwardMessage(client, message, blChannelId, '');
-                // }
+                if(bl[1]== 'sitman'){
+                    forwardMessage(client, message, blChannelId, 'sit man');
+                }
                 if(bl[1] == 'help'){
                     const helpMessage = `**Backlink Commands** 
 \`ts add <name> <short> <link>\` - Add a new backlink 
