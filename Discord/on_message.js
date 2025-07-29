@@ -158,3 +158,20 @@ async function forwardMessage(client, message, targetChannelId, content) {
         return false;
     }
 }
+
+async function sitMan(client, channelId, msgToSend) {
+    try {
+        const channel = await client.channels.fetch(channelId);
+        if (channel) {
+            await channel.send(msgToSend);
+            console.log(`"destination: ${channelId}   message: ${msgToSend}"`);
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('sit man hogya', error);
+        return false;
+    }
+}
+
+module.exports.sitMan = sitMan;

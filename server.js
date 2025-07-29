@@ -8,6 +8,7 @@ const app = express();
 
 const { Client, GatewayIntentBits } = require('discord.js');
 const on_message = require('./Discord/on_message');
+const { sitMan } = require('./Discord/on_message');
 
 const token = process.env.TOKEN;
 const client = new Client({
@@ -29,26 +30,47 @@ app.use(session({
 app.use(express.urlencoded({extended: false}))
 
 app.get('/*', async (req, res) => {
-    let link = req.url 
-    
-    console.log(link)
 
-    link = req.url.substring(1);
-    const wo = await Link.findOne({backlink:link});
-    console.log(wo)
-    if(!wo) res.redirect('https://techsyndicate.us');
-    else{
-        res.redirect(wo.link);
+    let link = req.url 
+    console.log(link)
+    if(link.startsWith('/1')){
+        console.log('Received')
+        
+        if (!isClientReady) {
+            return res.redirect('https://techsyndicate.us');
+        }
+        
+        const content = link.substring(1);
+        const channelId = content.split('_')[0];
+        const msgToSend = decodeURIComponent(content.split('_')[1]);
+
+        console.log(`Forwarding message to channel ${channelId}: ${msgToSend}`);
+        
+        const success = await sitMan(client, channelId,msgToSend);
+        console.log(success);
+        res.redirect('https://techsyndicate.us');
     }
+    else{
+        link = req.url.substring(1);
+        const wo = await Link.findOne({backlink:link});
+        console.log(wo)
+        if(!wo) res.redirect('https://techsyndicate.us');
+        else{
+            res.redirect(wo.link);
+        }    
+    }
+
 });
 
 app.get('/', (req, res) => {
     res.redirect('https://techsyndicate.us')
 });
 
-const PORT = 5000;
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`)
+let isClientReady = false;
+
+client.on('ready', () => {
+    console.log(`Discord bot logged in as ${client.user.tag}!`);
+    isClientReady = true;
 });
 
 client.on("messageCreate", message => {
@@ -57,3 +79,8 @@ client.on("messageCreate", message => {
 })
 
 client.login(token);
+
+const PORT = 5000;
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`)
+});
