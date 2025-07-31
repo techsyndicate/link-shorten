@@ -37,7 +37,7 @@ module.exports = async (client, message) => {
                         if(links.length > 0){
                             let content = 'Here are the backlinks:\n';
                             links.forEach(link => {
-                                content += `**Name**: ${link.name}, **Short**: ${link.backlink}, **Link**: ${link.link}\n`;
+                                content += `**Name**: ${link.name}, **Short**: ${link.backlink}, **Link**: <${link.link}>\n`;
                             });
                             // sendMessage(message, content);
                             if (content.length > 2000) {
