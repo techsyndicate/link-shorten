@@ -33,32 +33,15 @@ app.get('/*', async (req, res) => {
 
     let link = req.url 
     console.log(link)
-    if(link.startsWith('/1')){
-        console.log('Received')
-        
-        if (!isClientReady) {
-            return res.redirect('https://techsyndicate.us');
-        }
-        
-        const content = link.substring(1);
-        const channelId = content.split('_')[0];
-        const msgToSend = decodeURIComponent(content.split('_')[1]);
-
-        console.log(`Forwarding message to channel ${channelId}: ${msgToSend}`);
-        
-        const success = await sitMan(client, channelId,msgToSend);
-        console.log(success);
-        res.redirect('https://techsyndicate.us');
-    }
+    
+    link = req.url.substring(1);
+    const wo = await Link.findOne({backlink:link});
+    console.log(wo)
+    if(!wo) res.redirect('https://techsyndicate.us');
     else{
-        link = req.url.substring(1);
-        const wo = await Link.findOne({backlink:link});
-        console.log(wo)
-        if(!wo) res.redirect('https://techsyndicate.us');
-        else{
-            res.redirect(wo.link);
-        }    
-    }
+        res.redirect(wo.link);
+    }    
+
 
 });
 
