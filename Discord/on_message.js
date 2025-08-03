@@ -9,6 +9,7 @@ module.exports = async (client, message) => {
         if(message.content == 'ts sit man'){
             console.log(message.channelId);
             forwardMessage(client, message,message.channelId,"sit man");
+            setTimeout(() => message.delete(), 1000)
         }
         if (message.channel.id == publicCrossId && message) {
             if (message.content.includes('(') && message.content.includes(')')) {
