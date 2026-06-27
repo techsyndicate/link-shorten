@@ -6,7 +6,7 @@ const privateCrossId = process.env.PRIVATE_CROSS_ID;
 
 module.exports = async (client, message) => {
     if (!message.author.bot) {
-        if(message.content == 'ts sit man'){
+        if(message.content == 'ts sit man' && message.member.roles.has('1466745436764373216')){
             console.log(message.channelId);
             forwardMessage(client, message,message.channelId,"sit man");
             setTimeout(() => message.delete(), 1000)
