@@ -80,10 +80,6 @@ module.exports = async (client, message) => {
                         link: blLink,
                         date
                     });
-                
-                    // if (errors.length > 0) {
-                    //     return sendMessage(message, {errors})
-                    // }
                     
                     await newLink.save()
 
@@ -126,7 +122,7 @@ module.exports = async (client, message) => {
                     }
                 }
 
-                if(bl[1]== 'sitman'){
+                if(bl[1]== 'sitman' && message.member.roles.has('1466745436764373216')){
                     forwardMessage(client, message, blChannelId, 'sit man');
                 }
                 if(bl[1] == 'help'){
