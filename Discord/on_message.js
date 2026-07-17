@@ -1,16 +1,90 @@
 const Link = require('../schemas/linkSchema.js');
+const Baller = require('../schemas/ballerSchema.js');
 
 const blChannelId = process.env.BL_CHANNEL_ID;
 const publicCrossId = process.env.PUBLIC_CROSS_ID;
 const privateCrossId = process.env.PRIVATE_CROSS_ID;
+const heeHeeAudio = 'heehee.ogg';
 
 module.exports = async (client, message) => {
+    message.content = message.content.toLowerCase();
     if (!message.author.bot) {
         if(message.content == 'ts sit man' && message.member.roles.cache.has('1466745436764373216')){
             console.log(message.channelId);
             forwardMessage(client, message,message.channelId,"sit man");
             setTimeout(() => message.delete(), 1000)
         }
+
+        if(message.content == 'bhakas alert' && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
+            console.log(message.channelId);
+            forwardMessage(client, message,message.channelId,"https://tenor.com/view/duck-twerk-gif-11813731934647759555");
+            // setTimeout(() => message.delete(), 1000)
+        }
+
+        if(message.content == 'hee hee' && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
+            console.log(message.channelId);
+            forwardMessage(client, message,message.channelId,"*hee hee* 🕺🎵");
+            
+            if (Math.random() < 0.05) {
+                forwardAudio(client, message.channelId, heeHeeAudio);
+            }
+            
+            // setTimeout(() => message.delete(), 1000)
+        }
+
+        if(message.content == 'hee hee' && (!message.member.roles.cache.has('1466745436764373216') || !message.member.roles.cache.has('1499578831349092432'))){
+            forwardMessage(client, message,message.channelId,`<@${message.author.id}>\nhttps://klipy.com/gifs/meme-9587`);
+        }
+
+        if(message.content.includes('baller') && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
+            if(message.content.includes('add')){
+                const cause = (message.content.split('"')[1] || '').trim();
+                const effect = message.content.split('"')[3].trim();
+                console.log(`Cause: ${cause}, Effect: ${effect}`);
+
+                await Baller.findOne({ cause: cause }).then(async (baller) => {
+                    if (baller) {
+                        console.log('Baller already exists');
+                    } else {
+                        const newBaller = new Baller({
+                            cause: cause,
+                            effect: effect
+                        });
+                        await newBaller.save();
+                        console.log('New baller added');
+                    }
+                });
+
+                setTimeout(() => message.delete(), 1000)
+                forwardMessageDelete(client, message, message.channelId, `${cause}\n${effect}`);
+            }
+
+            else if(message.content.includes('remove')){
+                const causeToRemove = message.content.split('"')[1].trim();
+                await Baller.findOneAndDelete({ cause: causeToRemove }).then(() => {
+                    forwardMessage(client, message, message.channelId, `"${causeToRemove}" has been slayed by ${message.author.username}.`);
+                });
+            }
+
+            else if(message.content.includes('say')){
+                const causeToSay = message.content.split('say')[1].trim();
+                forwardMessage(client, message, message.channelId, causeToSay);
+                setTimeout(() => message.delete(), 1000)
+            }
+
+            else{
+                const ballerContent = message.content.split('baller')[1].trim();
+                console.log(`Baller content:${ballerContent}`);
+                await Baller.findOne({ cause: ballerContent }).then((baller) => {
+                    if (baller) {
+                        forwardMessage(client, message, message.channelId, `${baller.effect}`);
+                    }
+                });
+                setTimeout(() => message.delete(), 1000)
+            }
+        }
+        
+
         if (message.channel.id == publicCrossId && message) {
             if (message.content.includes('(') && message.content.includes(')')) {
                 console.log('Cross question detected');
@@ -122,9 +196,7 @@ module.exports = async (client, message) => {
                     }
                 }
 
-                if(bl[1]== 'sitman' && message.member.roles.cache.has('1466745436764373216')){
-                    forwardMessage(client, message, blChannelId, 'sit man');
-                }
+                
                 if(bl[1] == 'help'){
                     const helpMessage = `**Backlink Commands** 
 \`ts add <name> <short> <link>\` - Add a new backlink 
@@ -137,6 +209,24 @@ module.exports = async (client, message) => {
             }
         }
     };
+}
+
+async function forwardMessageDelete(client, message, targetChannelId, content) {
+    // console.log(content)
+    try {
+        const targetChannel = await client.channels.fetch(targetChannelId);
+        if (targetChannel) {
+            // console.log(content)
+            const sentMessage = await targetChannel.send(content);
+            setTimeout(() => sentMessage.delete().catch(() => {}), 1000);
+            console.log(`Message forwarded to channel ${targetChannelId}`);
+            return true;
+        }
+        return false;
+    } catch (error) {
+        // console.error('Failed to forward message:', error);
+        return false;
+    }
 }
 
 async function forwardMessage(client, message, targetChannelId, content) {
@@ -152,6 +242,23 @@ async function forwardMessage(client, message, targetChannelId, content) {
         return false;
     } catch (error) {
         // console.error('Failed to forward message:', error);
+        return false;
+    }
+
+    
+}
+
+async function forwardAudio(client, channelId, audioFile) {
+    try {
+        const targetChannel = await client.channels.fetch(channelId);
+        if (targetChannel) {
+            await targetChannel.send({ files: [audioFile] });
+            console.log(`Audio forwarded to channel ${channelId}`);
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('Failed to forward audio:', error);
         return false;
     }
 }

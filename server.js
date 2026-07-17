@@ -22,6 +22,7 @@ const client = new Client({
 mongoose.connect(process.env.MONGO_URI, console.log('MONGODB CONNECTED'))
 
 const Link = require('./schemas/linkSchema');
+const Baller = require('./schemas/ballerSchema');
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
