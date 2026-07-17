@@ -32,8 +32,10 @@ module.exports = async (client, message) => {
             // setTimeout(() => message.delete(), 1000)
         }
 
-        if(message.content == 'hee hee' && !message.member.roles.cache.has('1466745436764373216') && !message.member.roles.cache.has('1499578831349092432')){
-            forwardMessage(client, message,message.channelId,`<@${message.author.id}>\nhttps://klipy.com/gifs/meme-9587`);
+        if((message.content == 'hee hee' || message.content == 'baller' || message.content == 'ts sit man' || message.content == 'bhakas alert') && !message.member.roles.cache.has('1466745436764373216') && !message.member.roles.cache.has('1499578831349092432')){
+            const links = ['https://klipy.com/gifs/who-is-bro-1', 'https://klipy.com/gifs/komik-15', 'https://klipy.com/gifs/random-kid-1', 'https://klipy.com/gifs/meme-9587', 'https://klipy.com/gifs/cochu444yt-mike-brady', 'https://klipy.com/gifs/stranger-things-5-bro-think-he-part-of-the-team'];
+            const randomLink = links[Math.floor(Math.random() * links.length)];
+            forwardMessage(client, message,message.channelId,`<@${message.author.id}>\n${randomLink}`);
         }
 
         if(message.content.includes('baller') && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
