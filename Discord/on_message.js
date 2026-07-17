@@ -94,6 +94,29 @@ module.exports = async (client, message) => {
             }
         }
         else if(message.channel.id == blChannelId && message) {
+            if(message.content.includes('baller show')){
+                await Baller.find().then((ballers) => {
+                    if(ballers.length > 0){
+                        let content = 'ballers:\n';
+                        ballers.forEach(baller => {
+                            content += `**${baller.cause}, ${baller.effect}\n`;
+                        });
+                        if (content.length > 2000) {
+                            const chunks = [];
+                            for (let i = 0; i < content.length; i += 2000) {
+                                chunks.push(content.slice(i, i + 2000));
+                            }
+                            for (const chunk of chunks) {
+                                forwardMessage(client, message, blChannelId, chunk);
+                            }
+                        } else {
+                            forwardMessage(client, message, blChannelId, content);
+                        }
+                    } else {
+                        forwardMessage(client, message, blChannelId, 'no ballers found');
+                    }
+                });
+            }
             if (message.content.includes('ts')) {
                 console.log('backlink detected');
                 bl = message.content.split(' ')
