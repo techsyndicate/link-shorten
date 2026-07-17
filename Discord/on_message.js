@@ -32,7 +32,7 @@ module.exports = async (client, message) => {
             // setTimeout(() => message.delete(), 1000)
         }
 
-        if(message.content == 'hee hee' && (!message.member.roles.cache.has('1466745436764373216') || !message.member.roles.cache.has('1499578831349092432'))){
+        if(message.content == 'hee hee' && !message.member.roles.cache.has('1466745436764373216') && !message.member.roles.cache.has('1499578831349092432')){
             forwardMessage(client, message,message.channelId,`<@${message.author.id}>\nhttps://klipy.com/gifs/meme-9587`);
         }
 
