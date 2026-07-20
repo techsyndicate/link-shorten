@@ -7,21 +7,20 @@ const privateCrossId = process.env.PRIVATE_CROSS_ID;
 const heeHeeAudio = 'heehee.ogg';
 
 module.exports = async (client, message) => {
-    message.content = message.content.toLowerCase();
     if (!message.author.bot) {
-        if(message.content == 'ts sit man' && message.member.roles.cache.has('1466745436764373216')){
+        if(message.content.toLowerCase() == 'ts sit man' && message.member.roles.cache.has('1466745436764373216')){
             console.log(message.channelId);
             forwardMessage(client, message,message.channelId,"sit man");
             setTimeout(() => message.delete(), 1000)
         }
 
-        if(message.content == 'bhakas alert' && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
+        if(message.content.toLowerCase() == 'bhakas alert' && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
             console.log(message.channelId);
             forwardMessage(client, message,message.channelId,"https://tenor.com/view/duck-twerk-gif-11813731934647759555");
             // setTimeout(() => message.delete(), 1000)
         }
 
-        if(message.content == 'hee hee' && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
+        if(message.content.toLowerCase() == 'hee hee' && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
             console.log(message.channelId);
             forwardMessage(client, message,message.channelId,"*hee hee* 🕺🎵");
             
@@ -32,14 +31,14 @@ module.exports = async (client, message) => {
             // setTimeout(() => message.delete(), 1000)
         }
 
-        if((message.content == 'hee hee' || message.content == 'baller' || message.content == 'ts sit man' || message.content == 'bhakas alert') && !message.member.roles.cache.has('1466745436764373216') && !message.member.roles.cache.has('1499578831349092432')){
+        if((message.content.toLowerCase() == 'hee hee' || message.content.toLowerCase() == 'baller' || message.content.toLowerCase() == 'ts sit man' || message.content.toLowerCase() == 'bhakas alert') && !message.member.roles.cache.has('1466745436764373216') && !message.member.roles.cache.has('1499578831349092432')){
             const links = ['https://klipy.com/gifs/who-is-bro-1', 'https://klipy.com/gifs/komik-15', 'https://klipy.com/gifs/random-kid-1', 'https://klipy.com/gifs/meme-9587', 'https://klipy.com/gifs/cochu444yt-mike-brady', 'https://klipy.com/gifs/stranger-things-5-bro-think-he-part-of-the-team'];
             const randomLink = links[Math.floor(Math.random() * links.length)];
             forwardMessage(client, message,message.channelId,`<@${message.author.id}>\n${randomLink}`);
         }
 
-        if(message.content.includes('baller') && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
-            if(message.content.includes('add')){
+        if(message.content.toLowerCase().includes('baller') && (message.member.roles.cache.has('1466745436764373216') || message.member.roles.cache.has('1499578831349092432'))){
+            if(message.content.toLowerCase().includes('add')){
                 const cause = (message.content.split('"')[1] || '').trim();
                 const effect = message.content.split('"')[3].trim();
                 console.log(`Cause: ${cause}, Effect: ${effect}`);
@@ -61,14 +60,14 @@ module.exports = async (client, message) => {
                 forwardMessageDelete(client, message, message.channelId, `${cause}\n${effect}`);
             }
 
-            else if(message.content.includes('remove')){
+            else if(message.content.toLowerCase().includes('remove')){
                 const causeToRemove = message.content.split('"')[1].trim();
                 await Baller.findOneAndDelete({ cause: causeToRemove }).then(() => {
                     forwardMessage(client, message, message.channelId, `"${causeToRemove}" has been slayed by ${message.author.username}.`);
                 });
             }
 
-            else if(message.content.includes('say')){
+            else if(message.content.toLowerCase().includes('say')){
                 const causeToSay = message.content.split('say')[1].trim();
                 forwardMessage(client, message, message.channelId, causeToSay);
                 setTimeout(() => message.delete(), 1000)
